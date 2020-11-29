@@ -14,7 +14,7 @@ from django.db.models.functions import Lower
 TextField.register_lookup(Lower, "lower")
 
 
-# if users are allowed to view anyone's posts, not only theirs, then leave this and the next class uncommented
+# if users are allowed to view anyone's posts, not only theirs, then leave this and the next class uncommented. Comment this out if not.
 class PostListView(LoginRequiredMixin, ListView):
     model = Post
     template_name = 'blog/home.html'
@@ -35,31 +35,31 @@ class PostDetailView(LoginRequiredMixin, DetailView):
     model = Post
 
 
-# if users are allowed to view only their own posts, not anyone else's, then leave this and the next class uncommented
-# class PostListView(LoginRequiredMixin, ListView):
-#     model = Post
-#     template_name = 'blog/home.html'
-#     context_object_name = 'posts' # the name of a context variable with the queryset results
-#     ordering = ['-date_posted']
-#     paginate_by = 20
-#
+# if users are allowed to view only their own posts, not anyone else's, then leave this and the next class uncommented. Comment them out if you want to have a blog-type app instead.
+#class PostListView(LoginRequiredMixin, ListView):
+#    model = Post
+#    template_name = 'blog/home.html'
+#    context_object_name = 'posts' # the name of a context variable with the queryset results
+#    ordering = ['-date_posted']
+#    paginate_by = 20
+
 #     # modifying the function for returning posts
-#     def get_queryset(self):
-#         # if there is a search query in the URL parameter, then use it to filter the results
-#         search_query = self.request.GET.get('search', '')
-#         # using Q for case-insensitive search in a MySQL database
-#         # filtering for posts where the user is the author
-#         queryset = Post.objects.filter(Q(content__lower__contains=search_query)).filter(author_id=self.request.user.id).order_by('-date_posted')
-#         return queryset
+#    def get_queryset(self):
+#    # if there is a search query in the URL parameter, then use it to filter the results
+#        search_query = self.request.GET.get('search', '')
+#        using Q for case-insensitive search in a MySQL database
+#         filtering for posts where the user is the author
+#        queryset = Post.objects.filter(Q(content__lower__contains=search_query)).filter(author_id=self.request.user.id).order_by('-date_posted')
+#        return queryset
+
+#class PostDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+#    model = Post
 #
-# class PostDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
-#     model = Post
-#
-#     def test_func(self):
-#         post = self.get_object()
-#         if self.request.user == post.author:
-#             return True
-#         return False
+#    def test_func(self):
+#        post = self.get_object()
+#        if self.request.user == post.author:
+#            return True
+#        return False
 
 
 class PostCreateView(LoginRequiredMixin, CreateView):
@@ -74,7 +74,24 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 
 
 # if users are allowed to update or delete anyone's posts, not only theirs, then leave this and the next class uncommented
-class PostUpdateView(LoginRequiredMixin, UpdateView):
+#class PostUpdateView(LoginRequiredMixin, UpdateView):
+#    model = Post
+#    template_name = 'blog/post_update.html'
+#    form_class = UpdateViewForm
+#
+#    def form_valid(self, form):
+#        form.instance.author = self.request.user
+#        return super().form_valid(form)
+
+
+#class PostDeleteView(LoginRequiredMixin, DeleteView):
+#    model = Post
+#    success_url = '/'
+#    template_name = 'blog/post_delete.html'
+
+
+# if users are allowed to update or delete only their own posts, then leave this and the next class uncommented
+class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
     template_name = 'blog/post_update.html'
     form_class = UpdateViewForm
@@ -83,40 +100,23 @@ class PostUpdateView(LoginRequiredMixin, UpdateView):
         form.instance.author = self.request.user
         return super().form_valid(form)
 
+    def test_func(self):
+        post = self.get_object()
+        if self.request.user == post.author:
+            return True
+        return False
 
-class PostDeleteView(LoginRequiredMixin, DeleteView):
+
+class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Post
     success_url = '/'
     template_name = 'blog/post_delete.html'
 
-
-# if users are allowed to update or delete only their own posts, then leave this and the next class uncommented
-# class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-#     model = Post
-#     template_name = 'blog/post_update.html'
-#     form_class = UpdateViewForm
-#
-#     def form_valid(self, form):
-#         form.instance.author = self.request.user
-#         return super().form_valid(form)
-#
-#     def test_func(self):
-#         post = self.get_object()
-#         if self.request.user == post.author:
-#             return True
-#         return False
-#
-#
-# class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-#     model = Post
-#     success_url = '/'
-#     template_name = 'blog/post_delete.html'
-#
-#     def test_func(self):
-#         post = self.get_object()
-#         if self.request.user == post.author:
-#             return True
-#         return False
+    def test_func(self):
+        post = self.get_object()
+        if self.request.user == post.author:
+            return True
+        return False
 
 
 # defining actions when the CSRF error occurs
