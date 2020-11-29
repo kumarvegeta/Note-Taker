@@ -10,7 +10,7 @@ This simple note-taking application is designed to support the following feature
 - Allow a registered user, after logging in, to create, update, delete notes in the user interface (CRUD operations).
 - The notes and credentials of the user are personal, personalized and are stored in persistent storage using SQLite3 for relational DB storage.
 - Users have to authenticate themselves using a form that asks for username and password. An unregistered user cannot use the not-taking feature.
-- The system is currently designed as a single-session application. It is not possible for multiple, different users to use this application at the same time on the same IP address.
+- The system is currently designed in a way that is not possible for other users of the application to modify posts that were not created by them, though they can view them.
 
 ## Requirements:
 
