@@ -9,7 +9,7 @@ This simple note-taking application is designed to support the following feature
 - Allow a list of notes to be rendered into a web page GUI.
 - Allow a registered user, after logging in, to create, update, delete notes in the user interface (CRUD operations).
 - The notes and credentials of the user are personal, personalized and are stored in persistent storage using SQLite3 for relational DB storage.
-- Users have to authenticate themselves using a form that asks for username and password. An unregistered user cannot use the not-taking feature.
+- Users have to authenticate themselves using a form that asks for username and password. An unregistered user cannot use the note-taking feature.
 - The system is currently designed in a way that is not possible for other users of the application to modify posts that were not created by them, though they can view them.
 
 ## Requirements:
